@@ -154,8 +154,48 @@ void item25(){
     auto c = move(a) + b; // Matrix(Matrix&&)
     auto d = move(c) - b; // Matrix(const Matrix&)
 }
+
+// ITEM 26
+// Перегрузка функций с un ref
+// Это плохая идея.
+// Пример:
+set<string> names;
+template<typename T>
+void add(T&& name)
+{
+    cout << "forwarded type="<<type_id_with_cvr<decltype(forward<T>(name))>().pretty_name()<<endl;
+    names.emplace(std::forward<T>(name));
+}
+
+string nameFromIdx(int i){
+    return "kek";
+}
+
+void add(int idx) // int overload
+{
+    names.emplace(nameFromIdx(idx));
+}
+// Так же стоит избегать писать конструктор с un ref.
+// Потому что он очень жадный и будет перекрывать copy and move конструкторы
+void item26(){
+    cout<<"ITEM 26"<<endl;
+    std::string petName("Darla"); // as before
+    add(petName); // forward<T>(name) string&
+    add(std::string("Persephone")); // forward<T>(name) string&&
+    add("Patty Dog"); // forward<T>(name) char const (&) [10]
+    add(5);
+    // НЕ КОМПИЛИТСЯ
+    // Причина. Вызывается перегрузка add(short& name), потому что это более точное
+    // поподание в тип, чем add(int idx), для которого надо делать повышающие приведение типа
+    // ну и очевидно names.emplace(std::forward<short>(name)); провалится
+    short short_idx = 10;
+    //add(short_idx);
+}
+
+
 int main(){
     item23();
     item24();
     item25();
+    item26();
 }
