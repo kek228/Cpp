@@ -70,6 +70,7 @@ void example2(Args&&... args){
 }
 
 int main() {
+    cout<<"EXAMPLE 1:"<<endl;
     example1(1, 2.3, "kek"); // инстанцируется в foo<int, double, char const*>(1, 2.3, "kek")
     cout<<"EXAMPLE 2:"<<endl;
     int first = 1;
