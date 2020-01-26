@@ -21,4 +21,6 @@ if(Boost_FOUND)
     target_link_libraries(VariadicTemplatesTUPLE ${Boost_LIBRARIES})
 endif()
 
+add_executable(SharedPtr CommonExamples/SharedPtr.h CommonExamples/SharedPtrTest.cpp)
+
 #add_executable(SharedPtr SharedPtr.cpp)
