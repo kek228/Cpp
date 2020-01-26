@@ -192,10 +192,35 @@ void item26(){
     //add(short_idx);
 }
 
+// ITEM 26. reference collapsing
+// Во время инстанцирования шаблона может произойти так, что компилятор в неком своем
+// промежуточном состоянии сгенерирует ссылку на ссылку
+template<typename T>
+void func(T&& name){}
+
+void item28(){
+    cout<<"ITEM 28"<<endl;
+    func(5); // name это rval: после подстановки будет:
+    // func<int>(int&& &&name) ссылка rval на rval ссылку
+    double d = 2.5;
+    func(d); // ame это rval: после подстановки будет:
+    // func<int&>(int&& &name) ссылка rval на lval ссылку
+    // ПРАВИЛО:
+    // Во время инстанцирования шаблона может произойти 4 случая:
+    // & &, & &&, && &, && &&.
+    // В итоге & всегда бьет && и дает &
+    // ТОЛЬКО && && даст -> &&
+
+    // Таже история происходит при выводе auto
+    double &lrefd = d;
+    auto &&auto_refd = lrefd;// промежуточное состояние: auto && & -> &
+    cout << "auto_refd type="<<type_id_with_cvr<decltype(auto_refd)>().pretty_name()<<endl;
+};
 
 int main(){
     item23();
     item24();
     item25();
     item26();
+    item28();
 }
