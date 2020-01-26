@@ -12,9 +12,13 @@ if(Boost_FOUND)
     add_executable(Chapter1 ModernCPP/Chapter1.cpp)
     add_executable(Chapter5 ModernCPP/Chapter5.cpp)
     add_executable(VariadicTemplatesFUNC ModernCPP/VariadicTemplatesFUNC.cpp)
+    add_executable(VariadicTemplatesTUPLE ModernCPP/VariadicTemplatesTUPLE.cpp)
+
+
     target_link_libraries(Chapter1 ${Boost_LIBRARIES})
     target_link_libraries(Chapter5 ${Boost_LIBRARIES})
     target_link_libraries(VariadicTemplatesFUNC ${Boost_LIBRARIES})
+    target_link_libraries(VariadicTemplatesTUPLE ${Boost_LIBRARIES})
 endif()
 
 #add_executable(SharedPtr SharedPtr.cpp)
