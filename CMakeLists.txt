@@ -22,5 +22,6 @@ if(Boost_FOUND)
 endif()
 
 add_executable(SharedPtr CommonExamples/SharedPtr.h CommonExamples/SharedPtrTest.cpp)
+add_executable(Const_Cast TypeCasting/Const_Cast.cpp)
 
 #add_executable(SharedPtr SharedPtr.cpp)

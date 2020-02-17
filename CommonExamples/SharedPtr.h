@@ -16,6 +16,7 @@ struct ControlBlock{
     ControlBlock(const int v):_refCount(v){
 
     }
+    
     void deleter(T *ptr){
         delete ptr;
     }
