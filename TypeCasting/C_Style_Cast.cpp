@@ -7,8 +7,12 @@ using namespace std;
 // Сишный cast обычный и функциональный, что есть одно и тоже
 //( new_type ) expression
 // new_type ( expression )
-
-
+// Компилятор берет и:
+// 1. подставляет const_cast<new_type>(expression)
+// 2. static_cast<new_type>(expression)
+// 3. const_cast, а потом static_cast
+// 4. reinterpret_cast<new_type>(expression)
+// 5. const_cast, а потом reinterpret_cast
 
 double f = 3.14;
 unsigned int n1 = (unsigned int)f; // C-style cast
