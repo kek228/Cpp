@@ -10,6 +10,7 @@ using namespace std;
 // lval к lval или rval, rval к rval. Все одних типов
 // Важно:
 // не работает с указателями на функции
+// не генерирует код
 // САМОЕ ГЛАВНОЕ:
 // через const_cast можно создать неконстантный указатель на КОНСТАНТУ
 // модификация такого объекта через этот указатель: UNDEFINED BEHAVIOR
@@ -25,7 +26,7 @@ struct type {
     }
 };
 
-void const_cast_conversion() {
+int main() {
     int i = 3;                 // i is not declared const
     const int &rci = i;
     const_cast<int &>(rci) = 4; // OK: modifies i
@@ -50,9 +51,5 @@ void const_cast_conversion() {
     t1.f(100500);
     // Вообще это тоже UNDEFINED BEHAVIOR
     cout << "t1.i == " << t1.i << endl;
-
-}
-
-int main() {
-    const_cast_conversion();
+    return 0;
 }
