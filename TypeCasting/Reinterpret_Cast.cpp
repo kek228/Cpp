@@ -42,13 +42,15 @@ int main(){
     std::cout << i << '\n';
 
     int num = 100500; // с добавлением cv
-    auto ptr64 = reinterpret_cast<const int64_t*>(&num);
+    auto cptr64 = reinterpret_cast<const int64_t*>(&num);
     // ptr to num val == -1705253371159410540 при чем значение постоянно меняется
     // при том что адресс тот же
     // Все потому что в старших 4 байтах лежит какое то говно
-    cout<<"ptr to num val == " << *ptr64<<endl;
-    cout<<"ADDR DIFF="<<reinterpret_cast<const int*>(ptr64) - &num;
+    cout << "ptr to num val == " << *cptr64 << endl;
+    cout<<"ADDR DIFF="<< reinterpret_cast<const int*>(cptr64) - &num;
 
+    // А вот так не компилится
+    // auto ptr64 = reinterpret_cast<int64_t*>(cptr64);
 
     return 0;
 }
