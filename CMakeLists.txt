@@ -24,6 +24,7 @@ endif()
 add_executable(SharedPtr CommonExamples/SharedPtr.h CommonExamples/SharedPtrTest.cpp)
 add_executable(Const_Cast TypeCasting/Const_Cast.cpp)
 add_executable(Reinterpret_Cast TypeCasting/Reinterpret_Cast.cpp)
+add_executable(Static_Cast TypeCasting/Static_Cast.cpp)
 
 
 #add_executable(SharedPtr SharedPtr.cpp)
