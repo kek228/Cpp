@@ -34,5 +34,11 @@ int main() {
     };
     SharedPtr<Test> stptr2(new Test(10), deleter);
 
+    auto deleter2 = [](Test *ptr){
+        std::cout<<"shared_ptr deleter"<<std::endl;
+        delete ptr;
+    };
+    std::shared_ptr<Test> ptr(new Test, deleter2);
+
     return 0;
 }
