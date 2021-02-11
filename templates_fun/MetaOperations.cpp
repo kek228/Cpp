@@ -94,9 +94,6 @@ struct Getter<0, TUPLE> {
     }
 };
 
-
-
-
 int main() {
     Tuple<int, double, char> myTuple(1, 3.14, 'p');
     Getter<2, decltype(myTuple)> myGetter;

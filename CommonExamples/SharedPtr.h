@@ -38,8 +38,10 @@ public:
 
     }
 
-    template<typename Y>
-    SharedPtr(const SharedPtr<Y> &r) : _ptr(r._ptr), _ctr_block(r._ctr_block) {
+    SharedPtr(const SharedPtr<T> &r) {
+        _ptr.store(r._ptr);
+        _ctr_block.store(r._ctr_block);
+        ++(*_ctr_block)._refCount;
     }
 
     template<typename Y, typename DEL>
@@ -49,35 +51,44 @@ public:
     SharedPtr &operator=(const SharedPtr &r) noexcept {
         if (this == &r)
             return *this;
-        --(_ctr_block->_refCount);
-        check_and_del();
+        ++(_ctr_block->_refCount);
         _ptr = r._ptr;
         _ctr_block = r._ctr_block;
         return *this;
     }
 
-    void reset(int *ptr) {
-        --(_ctr_block->_refCount);
+    void reset(T *ptr) {
+        --(*_ctr_block)._refCount;
         check_and_del();
-        _ptr = ptr;
-        _ctr_block = new ControlBlock<T>();
+        _ptr.store(ptr);
+        if(ptr)
+            _ctr_block.store(new ControlBlock<T>());
     }
 
 
     ~SharedPtr() {
-        --(_ctr_block->_refCount);
+        if(_ctr_block)
+            --(*_ctr_block)._refCount;
         check_and_del();
     }
 
 private:
     void check_and_del() {
-        if (_ctr_block->_refCount != 0)
+        if ( !_ctr_block || (*_ctr_block)._refCount > 0)
             return;
-        _ctr_block->deleter(_ptr);
-        delete _ctr_block;
+        //
+        auto temp_ptr = _ptr.exchange(nullptr);
+        if(temp_ptr)
+            (*_ctr_block).deleter(temp_ptr);
+        else
+            return;
+        //
+        std::atomic< ControlBlock<T> * > temp_ctr_block = _ctr_block.exchange(nullptr);
+        if(temp_ctr_block != nullptr)
+            delete temp_ctr_block;
     }
 
 private:
-    T *_ptr;
-    ControlBlock<T> *_ctr_block;
+    std::atomic<T*> _ptr;
+    std::atomic< ControlBlock<T>* >_ctr_block;
 };
