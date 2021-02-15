@@ -30,4 +30,7 @@ add_executable(Static_Cast TypeCasting/Static_Cast.cpp)
 add_executable(Dynamic_Cast TypeCasting/Dynamic_Cast.cpp)
 add_executable(C_Style_Cast TypeCasting/C_Style_Cast.cpp)
 
+add_executable(ThreadSafeQ CommonExamples/ThreadSafeQueue.cpp CommonExamples/ThreadSafeQueue.h)
+
+
 add_executable(Playground main.cpp)
