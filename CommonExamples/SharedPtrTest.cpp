@@ -24,44 +24,48 @@ struct Test{
 
     int v;
 };
+#include <chrono>
+using namespace std::chrono_literals;
 
 void tfunc(SharedPtr<std::vector<int>> ptr) {
-    for(int i = 0 ; i < 100; ++i) {}
+    for(int i = 0 ; i < 1000; ++i) {}
 }
 
 void multitheadTest() {
     auto deleter = [](std::vector<int> *ptr){
-        std::cout<<"tid == "<<std::this_thread::get_id()<<std::endl;
-        std::cout<<"2nd == "<<(*ptr)[2]<<std::endl;
+        std::cout<<(*ptr)[2]<<std::endl;
         delete ptr;
     };
 
     SharedPtr<std::vector<int>> origP(new std::vector<int>{1, 2, 3, 4, 5}, deleter);
     std::vector<std::thread> threads;
-    for(int i = 0; i < 10; ++i)
+    for(int i = 0; i < 30; ++i)
         threads.emplace_back(tfunc, origP);
-    origP.reset(nullptr);
 
-    for(int i = 0; i < 10; ++i)
-        threads[i].join();
+    origP.reset(nullptr);
+    for(auto &t: threads)
+        t.join();
+    int a = 1;
 }
 
 int main() {
-//    SharedPtr<Test> stptr(new Test());
-//    //
-//    auto deleter = [](Test *ptr){
-//        std::cout<<"deleter"<<std::endl;
-//        delete ptr;
-//    };
-//    SharedPtr<Test> stptr2(new Test(10), deleter);
-//
-//    auto deleter2 = [](Test *ptr){
-//        std::cout<<"shared_ptr deleter"<<std::endl;
-//        delete ptr;
-//    };
-//    std::shared_ptr<Test> ptr(new Test, deleter2);
-    for(int i = 0; i < 10000; ++i)
+    SharedPtr<Test> stptr(new Test());
+    //
+    auto deleter = [](Test *ptr){
+        std::cout<<"deleter"<<std::endl;
+        delete ptr;
+    };
+    SharedPtr<Test> stptr2(new Test(10), deleter);
+
+    auto deleter2 = [](Test *ptr){
+        std::cout<<"shared_ptr deleter"<<std::endl;
+        delete ptr;
+    };
+    std::shared_ptr<Test> ptr(new Test, deleter2);
+    for(int i = 0; i < 100000; ++i) {
+        std::cout<<"TEST=="<<i<<std::endl;
         multitheadTest();
+    }
 
     return 0;
 }

@@ -39,7 +39,7 @@ public:
     }
 
     SharedPtr(const SharedPtr<T> &r) {
-        _ptr.store(r._ptr);
+        _ptr = r._ptr;
         _ctr_block.store(r._ctr_block);
         ++(*_ctr_block)._refCount;
     }
@@ -58,37 +58,31 @@ public:
     }
 
     void reset(T *ptr) {
-        --(*_ctr_block)._refCount;
         check_and_del();
-        _ptr.store(ptr);
+        _ptr = ptr;
         if(ptr)
             _ctr_block.store(new ControlBlock<T>());
     }
 
 
     ~SharedPtr() {
-        if(_ctr_block)
-            --(*_ctr_block)._refCount;
         check_and_del();
     }
 
 private:
     void check_and_del() {
-        if ( !_ctr_block || (*_ctr_block)._refCount > 0)
+        if(!_ctr_block)
             return;
-        //
-        auto temp_ptr = _ptr.exchange(nullptr);
-        if(temp_ptr)
-            (*_ctr_block).deleter(temp_ptr);
-        else
+        const int prevVal = (*_ctr_block)._refCount.fetch_sub(1);
+        if(prevVal != 1)
             return;
-        //
-        std::atomic< ControlBlock<T> * > temp_ctr_block = _ctr_block.exchange(nullptr);
-        if(temp_ctr_block != nullptr)
-            delete temp_ctr_block;
+        (*_ctr_block).deleter(_ptr);
+        auto toDelete = _ctr_block.exchange(nullptr);
+        delete toDelete;
     }
 
 private:
-    std::atomic<T*> _ptr;
+    std::shared_ptr<int> a;
+    T* _ptr;
     std::atomic< ControlBlock<T>* >_ctr_block;
 };
