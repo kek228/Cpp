@@ -4,11 +4,6 @@
 #include <thread>
 #include <iostream>
 
-void f(int *ptr) {
-    delete ptr;
-    //return true;
-}
-
 struct Test{
     Test():v(1){
         std::cout<<"Test()"<<std::endl;
